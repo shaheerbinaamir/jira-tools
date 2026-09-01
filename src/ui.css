@@ -1,0 +1,104 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --bg-soft: #f4f5f7;
+  --bg-raised: #ffffff;
+  --border: #dcdfe4;
+  --border-soft: #ebecf0;
+  --text: #172b4d;
+  --text-dim: #626f86;
+  --text-faint: #8993a4;
+  --accent: #0b66e4;
+  --accent-soft: #e9f2ff;
+  --jira: #1868db;
+  --confluence: #1f845a;
+  --danger: #c9372c;
+  --radius: 8px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html[data-theme="dark"] {
+  --bg: #1d2125;
+  --bg-soft: #22272b;
+  --bg-raised: #282e33;
+  --border: #38414a;
+  --border-soft: #2c333a;
+  --text: #dee4ea;
+  --text-dim: #9fadbc;
+  --text-faint: #7d8998;
+  --accent: #579dff;
+  --accent-soft: #1c2b41;
+  --jira: #669df1;
+  --confluence: #7ee2b8;
+  --danger: #f87168;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+button:hover { background: var(--bg-soft); }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+button.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+button.primary:hover { filter: brightness(1.08); }
+button.ghost { border-color: var(--border); }
+button:disabled { opacity: .5; cursor: default; }
+
+input[type="text"], input[type="url"], input[type="email"], input[type="password"], input[type="number"], select, textarea {
+  font: inherit;
+  color: var(--text);
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  width: 100%;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+
+a { color: var(--accent); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--bg-soft);
+  color: var(--text-dim);
+}
+.badge.jira { color: var(--jira); background: color-mix(in srgb, var(--jira) 14%, transparent); }
+.badge.confluence { color: var(--confluence); background: color-mix(in srgb, var(--confluence) 14%, transparent); }
+
+mark {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 2px;
+  font-weight: 600;
+}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <title>Mentions Only</title>
+  <link rel="stylesheet" href="ui.css" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="titles">
+      <h1 id="pageTitle">Mentions</h1>
+      <span id="count" class="count"></span>
+    </div>
+    <div class="topbar-actions">
+      <button id="refresh" class="ghost" title="Check now">Refresh</button>
+      <button id="markAll" class="ghost" title="Mark everything as read">Mark read</button>
+      <button id="options" class="ghost" title="Settings" aria-label="Settings">⚙</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs" role="tablist">
+    <button class="tab is-active" data-tab="mentions" role="tab">Mentions</button>
+    <button class="tab" data-tab="timetracking" role="tab">Time Tracking</button>
+    <button class="tab" data-tab="bitbucket" role="tab">Bitbucket</button>
+  </nav>
+
+  <nav class="filters" id="filters" role="tablist">
+    <button class="chip is-active" data-filter="all" role="tab">All</button>
+    <button class="chip" data-filter="unread" role="tab">Unread</button>
+    <button class="chip" data-filter="jira" role="tab">Jira</button>
+    <button class="chip" data-filter="confluence" role="tab">Confluence</button>
+  </nav>
+
+  <div id="banner" class="banner" hidden></div>
+
+  <main id="mentionsView" class="list" aria-live="polite"></main>
+
+  <main id="timeTrackingView" class="list" aria-live="polite" hidden>
+    <div id="ttTotal" class="tt-total"></div>
+    <div class="tt-controls">
+      <label for="ttSort">Sort by</label>
+      <select id="ttSort">
+        <option value="doneDate">Done date (latest first)</option>
+        <option value="size">Time logged (largest first)</option>
+      </select>
+    </div>
+    <div id="ttList"></div>
+  </main>
+
+  <main id="bitbucketView" class="list" aria-live="polite" hidden>
+    <form id="bbTargetForm" class="bb-target-form">
+      <input id="bbTargetInput" type="text" placeholder="Bitbucket username (blank = you)" spellcheck="false" autocomplete="off" />
+      <button type="submit" class="primary">View</button>
+    </form>
+    <div id="bbSummary" class="tt-total"></div>
+    <div id="bbGraph" class="bb-graph"></div>
+  </main>
+
+  <footer class="statusbar">
+    <span id="status">Loading…</span>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

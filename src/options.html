@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <title>Mentions Only — Settings</title>
+  <link rel="stylesheet" href="ui.css" />
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+<div class="page">
+  <header class="page-head">
+    <h1>Mentions Only</h1>
+    <p class="sub">A local inbox of the Jira and Confluence comments that actually @-mention you.</p>
+  </header>
+
+  <section class="panel">
+    <h2>Your Atlassian sites</h2>
+    <p class="hint">Paste the base URL you use in the browser, e.g. <code>https://acme.atlassian.net</code>.</p>
+    <div class="row">
+      <input id="siteInput" type="url" placeholder="https://your-company.atlassian.net" spellcheck="false" />
+      <button id="testSite" class="ghost">Test</button>
+      <button id="addSite" class="primary">Add site</button>
+    </div>
+    <div id="testResult" class="result" hidden></div>
+    <ul id="siteList" class="site-list"></ul>
+  </section>
+
+  <section class="panel">
+    <h2>Authentication</h2>
+    <label class="radio">
+      <input type="radio" name="authMode" value="session" />
+      <span>
+        <strong>Use my browser session</strong> <span class="tag">recommended</span>
+        <em>Nothing is stored. Requests reuse the cookies you already have from being logged in. If you get signed out, open your site in a tab and log back in.</em>
+      </span>
+    </label>
+    <label class="radio">
+      <input type="radio" name="authMode" value="token" />
+      <span>
+        <strong>Use an Atlassian API token</strong>
+        <em>Works even when your browser session lapses. The token is stored in this extension's local storage on this machine and sent only to your own site over HTTPS. Create one at
+        <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noreferrer">id.atlassian.com</a>.</em>
+      </span>
+    </label>
+    <div id="tokenFields" class="token-fields" hidden>
+      <div class="field">
+        <label for="tokenEmail">Atlassian account email</label>
+        <input id="tokenEmail" type="email" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label for="tokenValue">API token</label>
+        <input id="tokenValue" type="password" autocomplete="off" spellcheck="false" />
+        <p class="hint">Applies to every configured site. Revoke it at any time from your Atlassian profile.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>What to collect</h2>
+    <label class="check"><input id="includeJira" type="checkbox" /> <span>Jira comments</span></label>
+    <label class="check"><input id="includeConfluence" type="checkbox" /> <span>Confluence comments</span></label>
+    <label class="check"><input id="includeDescriptions" type="checkbox" /> <span>Also include mentions in issue descriptions and page bodies</span></label>
+
+    <div class="grid">
+      <div class="field">
+        <label for="pollMinutes">Check every (minutes)</label>
+        <input id="pollMinutes" type="number" min="1" max="240" />
+      </div>
+      <div class="field">
+        <label for="lookbackDays">Look back (days)</label>
+        <input id="lookbackDays" type="number" min="1" max="90" />
+        <p class="hint">How far back each check scans. Larger windows cost more requests.</p>
+      </div>
+      <div class="field">
+        <label for="theme">Theme</label>
+        <select id="theme">
+          <option value="system">Match system</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="sprintHoursTarget">Sprint hours target</label>
+        <input id="sprintHoursTarget" type="number" min="0" max="200" step="0.5" />
+        <p class="hint">Lower this for a sprint with a day off or a public holiday in it.</p>
+      </div>
+    </div>
+
+    <label class="check"><input id="autoResetSprintTarget" type="checkbox" />
+      <span>Automatically reset the sprint hours target to 65h when a new sprint starts</span></label>
+    <p class="hint">Detected from Jira's Sprint field on your assigned issues. Only resets back to 65h —
+    if you've dialled it down for the sprint you're currently in, it's left alone until that sprint ends.</p>
+
+    <div class="field">
+      <label for="aliases">Extra name variants to search for (one per line)</label>
+      <textarea id="aliases" rows="3" spellcheck="false" placeholder="Shaz&#10;S. Aamir"></textarea>
+      <p class="hint">Only widens the Jira candidate search. Every hit is still verified against your
+      account ID, so extra variants can never produce a false mention.</p>
+    </div>
+
+    <label class="check"><input id="notifyOnNew" type="checkbox" /> <span>Show a desktop notification for new mentions</span></label>
+  </section>
+
+  <section class="panel">
+    <h2>Bitbucket commit heatmap</h2>
+    <p class="hint">Shows commit activity across a workspace as a GitHub-profile-style heatmap — yours by default,
+    or anyone else's by typing their Bitbucket username in the tab itself. Bitbucket has no single "activity" feed,
+    so this scans every repo's default branch in the workspace below (or a fixed list) for that person's commits.
+    App passwords are deprecated — instead create a scoped <strong>API token</strong> at
+    <a href="https://id.atlassian.com/manage-profile/security/api-tokens" target="_blank" rel="noreferrer">id.atlassian.com/manage-profile/security/api-tokens</a>
+    with the <code>read:repository:bitbucket</code> and <code>read:account:bitbucket</code> scopes.</p>
+    <div class="grid">
+      <div class="field">
+        <label for="bbWorkspace">Workspace</label>
+        <input id="bbWorkspace" type="text" placeholder="acme" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label for="bbEmail">Atlassian account email</label>
+        <input id="bbEmail" type="email" spellcheck="false" autocomplete="off" />
+      </div>
+      <div class="field">
+        <label for="bbApiToken">API token</label>
+        <input id="bbApiToken" type="password" spellcheck="false" autocomplete="off" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="bbRepoSlugs">Limit to specific repo slugs (optional, one per line)</label>
+      <textarea id="bbRepoSlugs" rows="2" spellcheck="false" placeholder="repo-one&#10;repo-two"></textarea>
+      <p class="hint">Strongly recommended. Bitbucket can't filter commits by author server-side, so scanning
+      every repo in a busy workspace means paging through <em>everyone's</em> commit history before it can be
+      filtered down to yours — which is slow and can trip Bitbucket's rate limit. Listing just the repos you
+      actually commit to here skips the workspace-wide scan entirely and is dramatically faster.</p>
+    </div>
+    <div class="row">
+      <button id="testBitbucket" class="ghost">Test connection</button>
+    </div>
+    <div id="bbTestResult" class="result" hidden></div>
+  </section>
+
+  <section class="panel">
+    <h2>Data &amp; privacy</h2>
+    <ul class="facts">
+      <li>No analytics, no telemetry, no crash reporting, no remote code.</li>
+      <li>The only network requests are to the Atlassian sites listed above, plus api.bitbucket.org if you configure the commit heatmap.</li>
+      <li>Everything it remembers lives in <code>chrome.storage.local</code> on this machine.</li>
+    </ul>
+    <div class="row">
+      <button id="clearCache" class="ghost">Clear collected mentions</button>
+      <button id="resetAll" class="ghost danger">Reset all settings</button>
+    </div>
+  </section>
+
+  <footer class="page-foot">
+    <button id="save" class="primary">Save settings</button>
+    <span id="saveStatus" class="save-status"></span>
+  </footer>
+</div>
+<script type="module" src="options.js"></script>
+</body>
+</html>
